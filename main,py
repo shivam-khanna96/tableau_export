@@ -121,15 +121,15 @@ def run_reporting_workflow():
         excel_formatter.format_excel_workbook(settings.OUTPUT_EXCEL_FULL_PATH)
 
         # --- 6. Send Email with the Report ---
-        # if settings.EMAIL_RECIPIENTS_LIST: # Check if there are any recipients configured
-        #     logger.info(f"Preparing to send the report via email to: {', '.join(settings.EMAIL_RECIPIENTS_LIST)}")
-        #     mailer.prepare_and_send_report_email(
-        #         attachment_full_path=settings.OUTPUT_EXCEL_FULL_PATH
-        #     )
-        # else:
-        #     logger.info("No email recipients configured in '.env' or 'config/settings.py'. Skipping email step.")
+        if settings.EMAIL_RECIPIENTS_LIST: # Check if there are any recipients configured
+            logger.info(f"Preparing to send the report via email to: {', '.join(settings.EMAIL_RECIPIENTS_LIST)}")
+            mailer.prepare_and_send_report_email(
+                attachment_full_path=settings.OUTPUT_EXCEL_FULL_PATH
+            )
+        else:
+            logger.info("No email recipients configured in '.env' or 'config/settings.py'. Skipping email step.")
 
-        # logger.info("✅ Tableau Admissions Report Generation Workflow Completed Successfully!")
+        logger.info("✅ Tableau Admissions Report Generation Workflow Completed Successfully!")
 
     except TableauAPIError as api_err:
         logger.critical(f"A Tableau API error occurred: {api_err}", exc_info=True)
