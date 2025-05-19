@@ -28,18 +28,23 @@ TARGET_PROJECT_NAME = "Admissions Pipeline"
 TARGET_WORKBOOK_NAME_CONTAINS = "Student_Lifecycle_Pipeline"
 TARGET_VIEW_URL_NAMES = [ # Using viewUrlName for more stable matching
     "Applicants-SubmittedQualifiedAdmittedWaitListedDepositedTable",
-    "PowerCampusApplicantDownload"
+    "PowerCampusApplicantDownload",
+    "SubmittedApplicantStatusDetailed"
 ]
 
 # Mapping from Tableau View URL Name to desired Excel sheet name
 VIEW_URL_NAME_TO_SHEET_NAME_MAP = {
     "Applicants-SubmittedQualifiedAdmittedWaitListedDepositedTable": "Progress Report",
-    "PowerCampusApplicantDownload": "Raw Data"
+    "PowerCampusApplicantDownload": "Raw Data",
+    "SubmittedApplicantStatusDetailed": "Application Status Breakdown"
 }
 
 # Filter configuration for Tableau views
 VIEW_FILTER_NAME = "Application Term"
-VIEW_FILTER_VALUES = ["SUMMER 2025", "FALL 2025", "SPRING 2025"] # This could also be dynamic or from config
+# For views that need all three terms (like Progress Report)
+VIEW_FILTER_VALUES_MULTI_TERM = ["SUMMER 2025", "FALL 2025", "SPRING 2025"]
+# For views that need only Summer 2025 (like Application Status Breakdown)
+VIEW_FILTER_VALUES_SUMMER_ONLY = ["SUMMER 2025"]
 
 # --- Output File Configuration ---
 TODAY_STR = datetime.today().strftime("%Y-%m-%d")
@@ -97,6 +102,39 @@ PROGRESS_REPORT_NUMERIC_COLUMNS_FOR_INT_CONVERSION = [
 PROGRESS_REPORT_SUBTOTAL_COLUMNS_TO_AGGREGATE = PROGRESS_REPORT_NUMERIC_COLUMNS_FOR_INT_CONVERSION
 
 
+# --- Data Processing Constants for 'Application Status Breakdown' Report --- # <<< NEW SECTION
+ADMIT_BREAKDOWN_VIEW_URL_NAME = "SubmittedApplicantStatusDetailed"
+ADMIT_BREAKDOWN_DROP_COLUMNS = ['ApplicationTerm Order'] # Add any columns to drop if Tableau export includes extras not in the image
+ADMIT_BREAKDOWN_REMOVE_ROW_IF_CONTAINS_STRING = 'All' # Assuming similar 'All' rows might exist
+ADMIT_BREAKDOWN_PIVOT_INDEX_COLUMNS = ["Application Term", "Program", "CURRICULUM", "DEGREE"]
+ADMIT_BREAKDOWN_PIVOT_AGG_COLUMN = "Measure Names" # This assumes the Tableau view is structured similarly to Progress Report's source
+ADMIT_BREAKDOWN_PIVOT_VALUES_COLUMN = "Measure Values" # Same assumption as above
+ADMIT_BREAKDOWN_FINAL_COLUMN_ORDER = [
+    "Application Term", "Program", "CURRICULUM", "DEGREE",
+    "Submitted Applicants", # Ensure this matches the exact column name from Tableau export
+    "Admitted and Deposited",
+    "Admitted with Deposit, Deferred to Future Term",
+    "Admitted Without Deposit",
+    "Admitted, Not Coming After Deposit",
+    "Admitted, Not Coming, No Deposit",
+    "Withdrawn Before Decision",
+    "Withdrawn After Registration", # Ensure this matches the exact column name from Tableau export
+    "Under Admission+Faculty Review/In Process"
+]
+ADMIT_BREAKDOWN_NUMERIC_COLUMNS_FOR_INT_CONVERSION = [
+    "Submitted Applicants", # Ensure this matches the exact column name from Tableau export
+    "Admitted and Deposited",
+    "Admitted with Deposit, Deferred to Future Term",
+    "Admitted Without Deposit",
+    "Admitted, Not Coming After Deposit",
+    "Admitted, Not Coming, No Deposit",
+    "Withdrawn Before Decision",
+    "Withdrawn After Registration", # Ensure this matches the exact column name from Tableau export
+    "Under Admission+Faculty Review/In Process"
+]
+ADMIT_BREAKDOWN_SUBTOTAL_COLUMNS_TO_AGGREGATE = ADMIT_BREAKDOWN_NUMERIC_COLUMNS_FOR_INT_CONVERSION
+
+
 # --- Data Processing Constants for 'Raw Data' Report ---
 RAW_DATA_VIEW_URL_NAME = "PowerCampusApplicantDownload"
 RAW_DATA_DROP_COLUMNS = ['Blank', 'Month, Day, Year of Data Refresh Date', 'Index', 'Count of FIRST_NAME']
@@ -114,6 +152,7 @@ LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 
 # --- Excel Formatting Constants ---
 EXCEL_SHEET_NAME_PROGRESS_REPORT = "Progress Report" # Should match value in VIEW_URL_NAME_TO_SHEET_NAME_MAP
+EXCEL_SHEET_NAME_ADMIT_BREAKDOWN = "Application Status Breakdown" # Should match value in VIEW_URL_NAME_TO_SHEET_NAME_MAP
 EXCEL_FONT_BOLD = True
 EXCEL_ALIGNMENT_CENTER = {'horizontal': 'center', 'vertical': 'center'}
 EXCEL_FILL_ALT_ROW = {"fill_type": "solid", "start_color": "F2F2F2", "end_color": "F2F2F2"}
