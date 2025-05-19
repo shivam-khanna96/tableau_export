@@ -1,0 +1,155 @@
+# tableau_admissions_report/main.py
+import logging
+import sys
+import os
+import pandas as pd # For ExcelWriter
+
+# --- Project-specific imports ---
+# Initialize settings first as other modules might depend on them at import time
+try:
+    from config import settings
+except ValueError as config_error:
+    # This handles the ValueError raised in settings.py if .env vars are missing
+    print(f"CRITICAL CONFIGURATION ERROR: {config_error}", file=sys.stderr)
+    print("Please ensure your .env file is correctly set up in the project root.", file=sys.stderr)
+    sys.exit(1) # Exit if essential config is missing
+
+from tableau_connector.client import TableauClient, TableauAPIError
+from report_processor import data_handler, excel_formatter
+from email_sender import mailer
+
+
+# --- Basic Logging Setup ---
+# Configure logging as early as possible
+# Ensure the log format and level are taken from settings
+logging.basicConfig(
+    level=getattr(logging, settings.LOGGING_LEVEL.upper(), logging.INFO),
+    format=settings.LOG_FORMAT,
+    handlers=[
+        logging.StreamHandler(sys.stdout) # Log to console
+        # Optional: Add FileHandler for persistent logs
+        # logging.FileHandler(os.path.join(settings.OUTPUT_DIR_PATH, "report_generation.log"))
+    ]
+)
+logger = logging.getLogger(__name__) # Get a logger for the main module
+
+
+def run_reporting_workflow():
+    """
+    Orchestrates the entire workflow:
+    1. Authenticates with Tableau.
+    2. Finds relevant workbooks and views.
+    3. Fetches data for each view.
+    4. Processes data and writes to Excel sheets.
+    5. Formats the Excel workbook.
+    6. Sends the report via email.
+    7. Signs out from Tableau.
+    """
+    logger.info("🚀 Starting Tableau Admissions Report Generation Workflow...")
+    tableau_client = None  # Initialize for the finally block
+
+    try:
+        # --- 1. Initialize Tableau Client and Authenticate ---
+        logger.info("Initializing Tableau Client...")
+        tableau_client = TableauClient(
+            server_url=settings.TABLEAU_SERVER,
+            site_name=settings.TABLEAU_SITE,
+            token_name=settings.TABLEAU_TOKEN_NAME,
+            token_secret=settings.TABLEAU_TOKEN_SECRET,
+            api_version=settings.TABLEAU_API_VERSION
+        )
+        tableau_client.authenticate() # This will raise TableauAPIError on failure
+
+        # --- 2. Find Matching Workbook(s) ---
+        # Assuming we need only the first match if multiple workbooks fit the criteria.
+        # If more sophisticated logic is needed, this part should be enhanced.
+        matching_workbooks = tableau_client.find_matching_workbooks(
+            project_name=settings.TARGET_PROJECT_NAME,
+            name_contains_filter=settings.TARGET_WORKBOOK_NAME_CONTAINS
+        )
+
+        if not matching_workbooks:
+            logger.warning(
+                f"No workbooks found matching project '{settings.TARGET_PROJECT_NAME}' "
+                f"and name containing '{settings.TARGET_WORKBOOK_NAME_CONTAINS}'. Workflow cannot proceed."
+            )
+            return # Exit gracefully if no workbook is found
+
+        # Use the first matching workbook
+        target_workbook = matching_workbooks[0]
+        target_workbook_id = target_workbook.get("id")
+        logger.info(f"Using workbook: '{target_workbook.get('name')}' (ID: {target_workbook_id})")
+
+        if not target_workbook_id:
+            logger.error("Selected workbook has no ID. Cannot proceed.")
+            return
+
+        # --- 3. Find Matching Views in the selected Workbook ---
+        # Views are identified by their URL names for more stability
+        views_to_process_details = tableau_client.find_matching_views(
+            workbook_id=target_workbook_id,
+            target_view_url_names=settings.TARGET_VIEW_URL_NAMES
+        )
+
+        if not views_to_process_details:
+            logger.warning(
+                f"No views found matching the target URL names {settings.TARGET_VIEW_URL_NAMES} "
+                f"in workbook ID '{target_workbook_id}'. Workflow cannot proceed with report generation."
+            )
+            return
+
+        logger.info(f"Found {len(views_to_process_details)} views to process: "
+                    f"{[v.get('name', 'N/A') for v in views_to_process_details]}")
+
+        # --- 4. Generate Excel Report (Fetch data, process, and write to sheets) ---
+        logger.info(f"Preparing to generate Excel report at: {settings.OUTPUT_EXCEL_FULL_PATH}")
+        # Ensure output directory exists (settings.py should handle this, but double-check)
+        if not os.path.exists(settings.OUTPUT_DIR_PATH):
+            logger.info(f"Output directory {settings.OUTPUT_DIR_PATH} does not exist. Creating it...")
+            os.makedirs(settings.OUTPUT_DIR_PATH, exist_ok=True)
+            
+        with pd.ExcelWriter(settings.OUTPUT_EXCEL_FULL_PATH, engine="openpyxl") as writer:
+            data_handler.generate_excel_sheets_from_views(
+                tableau_client=tableau_client,
+                views_to_fetch=views_to_process_details,
+                excel_writer=writer
+            )
+        logger.info(f"Raw data written to Excel sheets in: {settings.OUTPUT_EXCEL_FULL_PATH}")
+
+        # --- 5. Format the Excel Workbook ---
+        logger.info("Applying formatting to the generated Excel workbook...")
+        excel_formatter.format_excel_workbook(settings.OUTPUT_EXCEL_FULL_PATH)
+
+        # --- 6. Send Email with the Report ---
+        if settings.EMAIL_RECIPIENTS_LIST: # Check if there are any recipients configured
+            logger.info(f"Preparing to send the report via email to: {', '.join(settings.EMAIL_RECIPIENTS_LIST)}")
+            mailer.prepare_and_send_report_email(
+                attachment_full_path=settings.OUTPUT_EXCEL_FULL_PATH
+            )
+        else:
+            logger.info("No email recipients configured in '.env' or 'config/settings.py'. Skipping email step.")
+
+        logger.info("✅ Tableau Admissions Report Generation Workflow Completed Successfully!")
+
+    except TableauAPIError as api_err:
+        logger.critical(f"A Tableau API error occurred: {api_err}", exc_info=True)
+        # Depending on the error, you might want to notify someone or handle differently
+    except ValueError as val_err: # Catch other ValueErrors, e.g. from data processing
+        logger.critical(f"A data or configuration value error occurred: {val_err}", exc_info=True)
+    except IOError as io_err: # For file operation errors (Excel writing, etc.)
+        logger.critical(f"An I/O error occurred (e.g., writing Excel file): {io_err}", exc_info=True)
+    except Exception as e: # Catch-all for any other unexpected errors
+        logger.critical(f"An unexpected error occurred in the main workflow: {e}", exc_info=True)
+    finally:
+        if tableau_client:
+            logger.info("Attempting to sign out from Tableau...")
+            tableau_client.sign_out() # sign_out handles cases where not authenticated
+        logger.info("Workflow finished.")
+
+
+if __name__ == "__main__":
+    # This block executes when the script is run directly (e.g., python main.py)
+    logger.info(f"Project Root (derived): {settings.PROJECT_ROOT}")
+    logger.info(f"Output Directory (absolute): {settings.OUTPUT_DIR_PATH}")
+    logger.info(f"Output Excel File (absolute): {settings.OUTPUT_EXCEL_FULL_PATH}")
+    run_reporting_workflow()
