@@ -30,7 +30,7 @@ MANIFEST
 
 # Output files (optional, but good practice for generated reports)
 *.xlsx
-output_reports/ # If your OUTPUT_DIR is named this
+output_reports
 
 # Virtual environment
 venv/

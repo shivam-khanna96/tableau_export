@@ -44,7 +44,7 @@ VIEW_FILTER_NAME = "Application Term"
 # For views that need all three terms (like Progress Report)
 VIEW_FILTER_VALUES_MULTI_TERM = ["SUMMER 2025", "FALL 2025", "SPRING 2025"]
 # For views that need only Summer 2025 (like Application Status Breakdown)
-VIEW_FILTER_VALUES_SUMMER_ONLY = ["SUMMER 2025"]
+VIEW_FILTER_VALUES_SUMMER_ONLY = ["FALL 2025"]
 
 # --- Output File Configuration ---
 TODAY_STR = datetime.today().strftime("%Y-%m-%d")
@@ -93,11 +93,11 @@ PROGRESS_REPORT_PIVOT_VALUES_COLUMN = "Measure Values"
 PROGRESS_REPORT_FINAL_COLUMN_ORDER = [
     "Application Term", "Program", "CURRICULUM", "DEGREE",
     "Submitted Applicants", "Qualified Applicants",
-    "Admitted Applicants", "Wait Listed", "Deposited"
+    "Admitted Applicants", "Wait Listed", "Deposited", "Enrolled"
 ]
 PROGRESS_REPORT_NUMERIC_COLUMNS_FOR_INT_CONVERSION = [
     "Submitted Applicants", "Qualified Applicants",
-    "Admitted Applicants", "Wait Listed", "Deposited"
+    "Admitted Applicants", "Wait Listed", "Deposited", "Enrolled"
 ]
 PROGRESS_REPORT_SUBTOTAL_COLUMNS_TO_AGGREGATE = PROGRESS_REPORT_NUMERIC_COLUMNS_FOR_INT_CONVERSION
 
@@ -139,7 +139,7 @@ ADMIT_BREAKDOWN_SUBTOTAL_COLUMNS_TO_AGGREGATE = ADMIT_BREAKDOWN_NUMERIC_COLUMNS_
 RAW_DATA_VIEW_URL_NAME = "PowerCampusApplicantDownload"
 RAW_DATA_DROP_COLUMNS = ['Blank', 'Month, Day, Year of Data Refresh Date', 'Index', 'Count of FIRST_NAME']
 RAW_DATA_FINAL_COLUMN_SELECTION_ORDER = [
-    'PEOPLE_CODE_ID', 'FIRST_NAME', 'LAST_NAME', 'EMAIL',
+    'PEOPLE_CODE_ID', 'FIRST_NAME', 'LAST_NAME', 'Personal_EMAIL', 'SMU_EMAIL',
     'Application Term', 'Program', 'CURRICULUM', 'DEGREE', 'Campus',
     'ACADEMIC_SESSION', 'APP_DECISION', 'Submitted Applicant Decision',
     'APP_STATUS', 'Submitted Applicant Status', 'ENROLL_SEPARATION',
