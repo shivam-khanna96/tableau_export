@@ -317,7 +317,7 @@ def generate_excel_sheets_from_views(
                 filter_name=settings.VIEW_FILTER_NAME,
                 filter_values=current_filter_values # <<< MODIFIED: Use determined filter values
             )
-            raw_df = pd.read_csv(BytesIO(csv_data_bytes))
+            raw_df = pd.read_csv(BytesIO(csv_data_bytes), thousands=',')
             logger.info(f"Successfully fetched CSV for view '{view_display_name}'. Shape: {raw_df.shape}")
 
             processed_df = None

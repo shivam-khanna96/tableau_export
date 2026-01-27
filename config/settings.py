@@ -42,9 +42,9 @@ VIEW_URL_NAME_TO_SHEET_NAME_MAP = {
 # Filter configuration for Tableau views
 VIEW_FILTER_NAME = "Application Term"
 # For views that need all three terms (like Progress Report)
-VIEW_FILTER_VALUES_MULTI_TERM = ["SUMMER 2025", "FALL 2025", "SPRING 2025"]
+VIEW_FILTER_VALUES_MULTI_TERM = ["FALL 2025", "SPRING 2026", "SUMMER 2026"]
 # For views that need only Summer 2025 (like Application Status Breakdown)
-VIEW_FILTER_VALUES_SUMMER_ONLY = ["FALL 2025"]
+VIEW_FILTER_VALUES_SUMMER_ONLY = ["SPRING 2026"]
 
 # --- Output File Configuration ---
 TODAY_STR = datetime.today().strftime("%Y-%m-%d")
