@@ -1,0 +1,198 @@
+2026-02-12 00:06:37,005 - __main__ - INFO - ============================================================
+2026-02-12 00:06:37,005 - __main__ - INFO - 🚀 Starting Admissions Report Workflow - Date: 2026-02-12
+2026-02-12 00:06:37,005 - __main__ - INFO - ============================================================
+2026-02-12 00:06:37,005 - __main__ - INFO - Log file location: c:\Users\skhanna\Desktop\tableau_export\./logs\Admissions Report 2026-02-12.log
+2026-02-12 00:06:37,005 - __main__ - INFO - Initializing Tableau Client...
+2026-02-12 00:06:37,005 - tableau_connector.client - INFO - TableauClient initialized for server: https://10ay.online.tableau.com, site: samuelmerritt
+2026-02-12 00:06:37,005 - tableau_connector.client - INFO - Request retries configured: total=3, backoff_factor=0.5
+2026-02-12 00:06:37,005 - tableau_connector.client - INFO - Request timeouts: connect=10.0s, read=30.0s
+2026-02-12 00:06:37,005 - tableau_connector.client - INFO - Attempting authentication for token name: 'Tableau_Export' on site: 'samuelmerritt'...
+2026-02-12 00:06:37,443 - tableau_connector.client - INFO - ✅ Authentication successful!
+2026-02-12 00:06:37,443 - tableau_connector.client - INFO - Searching for workbooks in project 'Admissions Pipeline' with name containing 'Student_Lifecycle_Pipeline'...
+2026-02-12 00:06:37,443 - tableau_connector.client - INFO - Fetching workbooks for user ID: 33c0bda4-589c-4662-9f17-cdfd269fa9a4 on site ID: a1e57e52-cff6-4bfd-b916-a46c99bc1591
+2026-02-12 00:06:37,579 - tableau_connector.client - INFO - Found 1 matching workbooks:
+2026-02-12 00:06:37,580 - __main__ - INFO - Using workbook: 'Student_Lifecycle_Pipeline_Tableau_Online_v10' (ID: 28f7284d-83dd-4b68-95c1-7d22d7025cc2)
+2026-02-12 00:06:37,580 - tableau_connector.client - INFO - Searching for views matching URL names: ['Applicants-SubmittedQualifiedAdmittedWaitListedDepositedTable', 'PowerCampusApplicantDownload', 'SubmittedApplicantStatusDetailed'] in workbook ID: 28f7284d-83dd-4b68-95c1-7d22d7025cc2
+2026-02-12 00:06:37,580 - tableau_connector.client - INFO - Fetching views for workbook ID: 28f7284d-83dd-4b68-95c1-7d22d7025cc2
+2026-02-12 00:06:37,753 - tableau_connector.client - INFO - Found 3 matching views:
+2026-02-12 00:06:37,753 - __main__ - INFO - Found 3 views to process.
+2026-02-12 00:06:37,753 - __main__ - INFO - Preparing to generate Excel report at: c:\Users\skhanna\Desktop\tableau_export\./output_reports\Admissions Report 2026-02-12.xlsx
+2026-02-12 00:06:37,755 - report_processor.data_handler - INFO - Processing 3 views for Excel report generation...
+2026-02-12 00:06:37,756 - report_processor.data_handler - INFO - Processing view: 'Applicants - Submitted/Qualified/Admitted/Wait Listed/Deposited Table' (ID: 4b02e768-34d2-4109-b167-519ccd11bc14) for Excel sheet: 'Progress Report'
+2026-02-12 00:06:37,756 - tableau_connector.client - INFO - Fetching data for view ID: 4b02e768-34d2-4109-b167-519ccd11bc14 with filter: Application Term=['SUMMER 2025', 'FALL 2025', 'SPRING 2025']
+2026-02-12 00:06:39,508 - tableau_connector.client - INFO - Successfully fetched CSV data for view ID: 4b02e768-34d2-4109-b167-519ccd11bc14, size: 49698 bytes.
+2026-02-12 00:06:39,520 - report_processor.data_handler - INFO - Successfully fetched CSV for view 'Applicants - Submitted/Qualified/Admitted/Wait Listed/Deposited Table'. Shape: (456, 8)
+2026-02-12 00:06:39,520 - report_processor.data_handler - INFO - Starting processing for 'Progress Report' data...
+2026-02-12 00:06:39,827 - report_processor.data_handler - INFO - 'Progress Report' data processing complete.
+2026-02-12 00:06:39,836 - report_processor.data_handler - INFO - Successfully wrote sheet 'Progress Report' for view 'Applicants - Submitted/Qualified/Admitted/Wait Listed/Deposited Table'.
+2026-02-12 00:06:39,836 - report_processor.data_handler - INFO - Processing view: 'Submitted Applicant Status Detailed' (ID: c88a1b4c-08d6-4baf-9e95-4b7f3ecaa487) for Excel sheet: 'Application Status Breakdown'
+2026-02-12 00:06:39,836 - tableau_connector.client - INFO - Fetching data for view ID: c88a1b4c-08d6-4baf-9e95-4b7f3ecaa487 with filter: Application Term=['SUMMER 2025']
+2026-02-12 00:06:41,603 - tableau_connector.client - INFO - Successfully fetched CSV data for view ID: c88a1b4c-08d6-4baf-9e95-4b7f3ecaa487, size: 24373 bytes.
+2026-02-12 00:06:41,603 - report_processor.data_handler - INFO - Successfully fetched CSV for view 'Submitted Applicant Status Detailed'. Shape: (200, 8)
+2026-02-12 00:06:41,603 - report_processor.data_handler - INFO - Starting processing for 'Admit Breakdown' data...
+2026-02-12 00:06:41,729 - report_processor.data_handler - INFO - 'Admit Breakdown' data processing complete.
+2026-02-12 00:06:41,732 - report_processor.data_handler - INFO - Successfully wrote sheet 'Application Status Breakdown' for view 'Submitted Applicant Status Detailed'.
+2026-02-12 00:06:41,733 - report_processor.data_handler - INFO - Processing view: 'Power Campus Applicant Download' (ID: 8af01b1f-b683-4f36-a022-30d1ad7cc0aa) for Excel sheet: 'Raw Data'
+2026-02-12 00:06:41,733 - tableau_connector.client - INFO - Fetching data for view ID: 8af01b1f-b683-4f36-a022-30d1ad7cc0aa with filter: Application Term=['SUMMER 2025', 'FALL 2025', 'SPRING 2025']
+2026-02-12 00:06:45,729 - tableau_connector.client - INFO - Successfully fetched CSV data for view ID: 8af01b1f-b683-4f36-a022-30d1ad7cc0aa, size: 1672044 bytes.
+2026-02-12 00:06:45,799 - report_processor.data_handler - INFO - Successfully fetched CSV for view 'Power Campus Applicant Download'. Shape: (5888, 24)
+2026-02-12 00:06:45,800 - report_processor.data_handler - INFO - Starting processing for 'Raw Data Applicant Download'...
+2026-02-12 00:06:45,803 - report_processor.data_handler - INFO - 'Raw Data Applicant Download' processing complete.
+2026-02-12 00:06:46,551 - report_processor.data_handler - INFO - Successfully wrote sheet 'Raw Data' for view 'Power Campus Applicant Download'.
+2026-02-12 00:06:46,552 - report_processor.data_handler - INFO - All specified views processed for Excel sheet generation.
+2026-02-12 00:06:47,794 - __main__ - INFO - Raw data written to Excel sheets in: c:\Users\skhanna\Desktop\tableau_export\./output_reports\Admissions Report 2026-02-12.xlsx
+2026-02-12 00:06:47,794 - __main__ - INFO - Applying formatting to the generated Excel workbook...
+2026-02-12 00:06:47,794 - report_processor.excel_formatter - INFO - Starting Excel formatting for workbook: c:\Users\skhanna\Desktop\tableau_export\./output_reports\Admissions Report 2026-02-12.xlsx
+2026-02-12 00:06:49,624 - report_processor.excel_formatter - INFO - Formatting sheet: Progress Report
+2026-02-12 00:06:49,624 - report_processor.excel_formatter - INFO - Applying detailed styles to 'Progress Report' sheet: Progress Report
+2026-02-12 00:06:49,801 - report_processor.excel_formatter - INFO - Detailed styling for 'Progress Report' sheet 'Progress Report' complete.
+2026-02-12 00:06:49,803 - report_processor.excel_formatter - INFO - Formatting sheet: Application Status Breakdown
+2026-02-12 00:06:49,803 - report_processor.excel_formatter - INFO - Applying detailed styles to 'Admit Breakdown' sheet: Application Status Breakdown
+2026-02-12 00:06:49,882 - report_processor.excel_formatter - INFO - Detailed styling for 'Admit Breakdown' sheet 'Application Status Breakdown' complete.
+2026-02-12 00:06:49,883 - report_processor.excel_formatter - INFO - Formatting sheet: Raw Data
+2026-02-12 00:06:49,884 - report_processor.excel_formatter - INFO - Applying generic formatting to sheet: Raw Data
+2026-02-12 00:06:51,348 - report_processor.excel_formatter - INFO - ✅ Excel workbook formatting complete. Saved to: c:\Users\skhanna\Desktop\tableau_export\./output_reports\Admissions Report 2026-02-12.xlsx
+2026-02-12 00:06:51,349 - __main__ - INFO - Preparing to send report via Graph API to: skhanna@samuelmerritt.edu
+2026-02-12 00:06:51,770 - email_sender.mailer - INFO - Attached file: Admissions Report 2026-02-12.xlsx (426472 bytes)
+2026-02-12 00:06:51,770 - email_sender.mailer - INFO - Sending email via Graph API to 1 recipients as skhanna@samuelmerritt.edu...
+2026-02-12 00:06:52,700 - email_sender.mailer - INFO - ✅ Email successfully accepted by Microsoft Graph API.
+2026-02-12 00:06:52,700 - email_sender.mailer - INFO - Report email workflow finished successfully.
+2026-02-12 00:06:52,700 - __main__ - INFO - ✅ Workflow Completed Successfully!
+2026-02-12 00:06:52,700 - __main__ - INFO - Attempting to sign out from Tableau...
+2026-02-12 00:06:52,700 - tableau_connector.client - INFO - Attempting to sign out from Tableau Server...
+2026-02-12 00:06:52,785 - tableau_connector.client - INFO - ✅ Successfully signed out from Tableau Server.
+2026-02-12 00:06:52,787 - __main__ - INFO - Workflow finished.
+2026-02-12 00:06:52,787 - __main__ - INFO - ============================================================
+
+2026-02-12 00:18:39,423 - __main__ - INFO - ============================================================
+2026-02-12 00:18:39,423 - __main__ - INFO - 🚀 Starting Admissions Report Workflow - Date: 2026-02-12
+2026-02-12 00:18:39,423 - __main__ - INFO - ============================================================
+2026-02-12 00:18:39,423 - __main__ - INFO - Log file location: c:\Users\skhanna\Desktop\tableau_export\./logs\Admissions Report 2026-02-12.log
+2026-02-12 00:18:39,423 - __main__ - INFO - Initializing Tableau Client...
+2026-02-12 00:18:39,423 - tableau_connector.client - INFO - TableauClient initialized for server: https://10ay.online.tableau.com, site: samuelmerritt
+2026-02-12 00:18:39,424 - tableau_connector.client - INFO - Request retries configured: total=3, backoff_factor=0.5
+2026-02-12 00:18:39,424 - tableau_connector.client - INFO - Request timeouts: connect=10.0s, read=30.0s
+2026-02-12 00:18:39,424 - tableau_connector.client - INFO - Attempting authentication for token name: 'Tableau_Export' on site: 'samuelmerritt'...
+2026-02-12 00:18:39,861 - tableau_connector.client - INFO - ✅ Authentication successful!
+2026-02-12 00:18:39,862 - tableau_connector.client - INFO - Searching for workbooks in project 'Admissions Pipeline' with name containing 'Student_Lifecycle_Pipeline'...
+2026-02-12 00:18:39,863 - tableau_connector.client - INFO - Fetching workbooks for user ID: 33c0bda4-589c-4662-9f17-cdfd269fa9a4 on site ID: a1e57e52-cff6-4bfd-b916-a46c99bc1591
+2026-02-12 00:18:40,027 - tableau_connector.client - INFO - Found 1 matching workbooks:
+2026-02-12 00:18:40,028 - __main__ - INFO - Using workbook: 'Student_Lifecycle_Pipeline_Tableau_Online_v10' (ID: 28f7284d-83dd-4b68-95c1-7d22d7025cc2)
+2026-02-12 00:18:40,028 - tableau_connector.client - INFO - Searching for views matching URL names: ['Applicants-SubmittedQualifiedAdmittedWaitListedDepositedTable', 'PowerCampusApplicantDownload', 'SubmittedApplicantStatusDetailed'] in workbook ID: 28f7284d-83dd-4b68-95c1-7d22d7025cc2
+2026-02-12 00:18:40,028 - tableau_connector.client - INFO - Fetching views for workbook ID: 28f7284d-83dd-4b68-95c1-7d22d7025cc2
+2026-02-12 00:18:40,182 - tableau_connector.client - INFO - Found 3 matching views:
+2026-02-12 00:18:40,182 - __main__ - INFO - Found 3 views to process.
+2026-02-12 00:18:40,182 - __main__ - INFO - Preparing to generate Excel report at: c:\Users\skhanna\Desktop\tableau_export\./output_reports\Admissions Report 2026-02-12.xlsx
+2026-02-12 00:18:40,184 - report_processor.data_handler - INFO - Processing 3 views for Excel report generation...
+2026-02-12 00:18:40,184 - report_processor.data_handler - INFO - Processing view: 'Applicants - Submitted/Qualified/Admitted/Wait Listed/Deposited Table' (ID: 4b02e768-34d2-4109-b167-519ccd11bc14) for Excel sheet: 'Progress Report'
+2026-02-12 00:18:40,184 - tableau_connector.client - INFO - Fetching data for view ID: 4b02e768-34d2-4109-b167-519ccd11bc14 with filter: Application Term=['FALL 2025', 'SPRING 2026', 'SUMMER 2026']
+2026-02-12 00:18:41,775 - tableau_connector.client - INFO - Successfully fetched CSV data for view ID: 4b02e768-34d2-4109-b167-519ccd11bc14, size: 52545 bytes.
+2026-02-12 00:18:41,775 - report_processor.data_handler - INFO - Successfully fetched CSV for view 'Applicants - Submitted/Qualified/Admitted/Wait Listed/Deposited Table'. Shape: (486, 8)
+2026-02-12 00:18:41,775 - report_processor.data_handler - INFO - Starting processing for 'Progress Report' data...
+2026-02-12 00:18:42,037 - report_processor.data_handler - INFO - 'Progress Report' data processing complete.
+2026-02-12 00:18:42,045 - report_processor.data_handler - INFO - Successfully wrote sheet 'Progress Report' for view 'Applicants - Submitted/Qualified/Admitted/Wait Listed/Deposited Table'.
+2026-02-12 00:18:42,045 - report_processor.data_handler - INFO - Processing view: 'Submitted Applicant Status Detailed' (ID: c88a1b4c-08d6-4baf-9e95-4b7f3ecaa487) for Excel sheet: 'Application Status Breakdown'
+2026-02-12 00:18:42,049 - tableau_connector.client - INFO - Fetching data for view ID: c88a1b4c-08d6-4baf-9e95-4b7f3ecaa487 with filter: Application Term=['SUMMER 2026']
+2026-02-12 00:18:43,587 - tableau_connector.client - INFO - Successfully fetched CSV data for view ID: c88a1b4c-08d6-4baf-9e95-4b7f3ecaa487, size: 26288 bytes.
+2026-02-12 00:18:43,589 - report_processor.data_handler - INFO - Successfully fetched CSV for view 'Submitted Applicant Status Detailed'. Shape: (220, 8)
+2026-02-12 00:18:43,589 - report_processor.data_handler - INFO - Starting processing for 'Admit Breakdown' data...
+2026-02-12 00:18:43,776 - report_processor.data_handler - INFO - 'Admit Breakdown' data processing complete.
+2026-02-12 00:18:43,780 - report_processor.data_handler - INFO - Successfully wrote sheet 'Application Status Breakdown' for view 'Submitted Applicant Status Detailed'.
+2026-02-12 00:18:43,781 - report_processor.data_handler - INFO - Processing view: 'Power Campus Applicant Download' (ID: 8af01b1f-b683-4f36-a022-30d1ad7cc0aa) for Excel sheet: 'Raw Data'
+2026-02-12 00:18:43,781 - tableau_connector.client - INFO - Fetching data for view ID: 8af01b1f-b683-4f36-a022-30d1ad7cc0aa with filter: Application Term=['FALL 2025', 'SPRING 2026', 'SUMMER 2026']
+2026-02-12 00:18:48,260 - tableau_connector.client - INFO - Successfully fetched CSV data for view ID: 8af01b1f-b683-4f36-a022-30d1ad7cc0aa, size: 1698795 bytes.
+2026-02-12 00:18:48,326 - report_processor.data_handler - INFO - Successfully fetched CSV for view 'Power Campus Applicant Download'. Shape: (6006, 24)
+2026-02-12 00:18:48,326 - report_processor.data_handler - INFO - Starting processing for 'Raw Data Applicant Download'...
+2026-02-12 00:18:48,327 - report_processor.data_handler - INFO - 'Raw Data Applicant Download' processing complete.
+2026-02-12 00:18:49,104 - report_processor.data_handler - INFO - Successfully wrote sheet 'Raw Data' for view 'Power Campus Applicant Download'.
+2026-02-12 00:18:49,105 - report_processor.data_handler - INFO - All specified views processed for Excel sheet generation.
+2026-02-12 00:18:50,277 - __main__ - INFO - Raw data written to Excel sheets in: c:\Users\skhanna\Desktop\tableau_export\./output_reports\Admissions Report 2026-02-12.xlsx
+2026-02-12 00:18:50,277 - __main__ - INFO - Applying formatting to the generated Excel workbook...
+2026-02-12 00:18:50,277 - report_processor.excel_formatter - INFO - Starting Excel formatting for workbook: c:\Users\skhanna\Desktop\tableau_export\./output_reports\Admissions Report 2026-02-12.xlsx
+2026-02-12 00:18:52,035 - report_processor.excel_formatter - INFO - Formatting sheet: Progress Report
+2026-02-12 00:18:52,035 - report_processor.excel_formatter - INFO - Applying detailed styles to 'Progress Report' sheet: Progress Report
+2026-02-12 00:18:52,209 - report_processor.excel_formatter - INFO - Detailed styling for 'Progress Report' sheet 'Progress Report' complete.
+2026-02-12 00:18:52,209 - report_processor.excel_formatter - INFO - Formatting sheet: Application Status Breakdown
+2026-02-12 00:18:52,210 - report_processor.excel_formatter - INFO - Applying detailed styles to 'Admit Breakdown' sheet: Application Status Breakdown
+2026-02-12 00:18:52,250 - report_processor.excel_formatter - INFO - Detailed styling for 'Admit Breakdown' sheet 'Application Status Breakdown' complete.
+2026-02-12 00:18:52,250 - report_processor.excel_formatter - INFO - Formatting sheet: Raw Data
+2026-02-12 00:18:52,254 - report_processor.excel_formatter - INFO - Applying generic formatting to sheet: Raw Data
+2026-02-12 00:18:53,604 - report_processor.excel_formatter - INFO - ✅ Excel workbook formatting complete. Saved to: c:\Users\skhanna\Desktop\tableau_export\./output_reports\Admissions Report 2026-02-12.xlsx
+2026-02-12 00:18:53,604 - __main__ - INFO - Preparing to send report via Graph API to: skhanna@samuelmerritt.edu
+2026-02-12 00:18:54,041 - email_sender.mailer - INFO - Attached file: Admissions Report 2026-02-12.xlsx (434759 bytes)
+2026-02-12 00:18:54,041 - email_sender.mailer - INFO - Sending email via Graph API to 1 recipients as skhanna@samuelmerritt.edu...
+2026-02-12 00:18:54,916 - email_sender.mailer - INFO - ✅ Email successfully accepted by Microsoft Graph API.
+2026-02-12 00:18:54,916 - email_sender.mailer - INFO - Report email workflow finished successfully.
+2026-02-12 00:18:54,916 - __main__ - INFO - ✅ Workflow Completed Successfully!
+2026-02-12 00:18:54,916 - __main__ - INFO - Attempting to sign out from Tableau...
+2026-02-12 00:18:54,916 - tableau_connector.client - INFO - Attempting to sign out from Tableau Server...
+2026-02-12 00:18:55,008 - tableau_connector.client - INFO - ✅ Successfully signed out from Tableau Server.
+2026-02-12 00:18:55,010 - __main__ - INFO - Workflow finished.
+2026-02-12 00:18:55,013 - __main__ - INFO - ============================================================
+
+2026-02-12 00:39:28,475 - __main__ - INFO - ============================================================
+2026-02-12 00:39:28,476 - __main__ - INFO - Starting Admissions Report Workflow - Date: 2026-02-12
+2026-02-12 00:39:28,477 - __main__ - INFO - ============================================================
+2026-02-12 00:39:28,477 - __main__ - INFO - Log file location: c:\Users\skhanna\Desktop\tableau_export\./logs\Admissions Report 2026-02-12.log
+2026-02-12 00:39:28,477 - __main__ - INFO - Initializing Tableau Client...
+2026-02-12 00:39:28,478 - tableau_connector.client - INFO - TableauClient initialized for server: https://10ay.online.tableau.com, site: samuelmerritt
+2026-02-12 00:39:28,478 - tableau_connector.client - INFO - Request retries configured: total=3, backoff_factor=0.5
+2026-02-12 00:39:28,478 - tableau_connector.client - INFO - Request timeouts: connect=10.0s, read=30.0s
+2026-02-12 00:39:28,478 - tableau_connector.client - INFO - Attempting authentication for token name: 'Tableau_Export' on site: 'samuelmerritt'...
+2026-02-12 00:39:29,008 - tableau_connector.client - INFO - Authentication successful!
+2026-02-12 00:39:29,008 - tableau_connector.client - INFO - Searching for workbooks in project 'Admissions Pipeline' with name containing 'Student_Lifecycle_Pipeline'...
+2026-02-12 00:39:29,009 - tableau_connector.client - INFO - Fetching workbooks for user ID: 33c0bda4-589c-4662-9f17-cdfd269fa9a4 on site ID: a1e57e52-cff6-4bfd-b916-a46c99bc1591
+2026-02-12 00:39:29,173 - tableau_connector.client - INFO - Found 1 matching workbooks:
+2026-02-12 00:39:29,174 - __main__ - INFO - Using workbook: 'Student_Lifecycle_Pipeline_Tableau_Online_v10' (ID: 28f7284d-83dd-4b68-95c1-7d22d7025cc2)
+2026-02-12 00:39:29,174 - tableau_connector.client - INFO - Searching for views matching URL names: ['Applicants-SubmittedQualifiedAdmittedWaitListedDepositedTable', 'PowerCampusApplicantDownload', 'SubmittedApplicantStatusDetailed'] in workbook ID: 28f7284d-83dd-4b68-95c1-7d22d7025cc2
+2026-02-12 00:39:29,174 - tableau_connector.client - INFO - Fetching views for workbook ID: 28f7284d-83dd-4b68-95c1-7d22d7025cc2
+2026-02-12 00:39:29,355 - tableau_connector.client - INFO - Found 3 matching views:
+2026-02-12 00:39:29,356 - __main__ - INFO - Found 3 views to process.
+2026-02-12 00:39:29,356 - __main__ - INFO - Preparing to generate Excel report at: c:\Users\skhanna\Desktop\tableau_export\./output_reports\Admissions Report 2026-02-12.xlsx
+2026-02-12 00:39:29,359 - report_processor.data_handler - INFO - Processing 3 views for Excel report generation...
+2026-02-12 00:39:29,360 - report_processor.data_handler - INFO - Processing view: 'Applicants - Submitted/Qualified/Admitted/Wait Listed/Deposited Table' (ID: 4b02e768-34d2-4109-b167-519ccd11bc14) for Excel sheet: 'Progress Report'
+2026-02-12 00:39:29,360 - tableau_connector.client - INFO - Fetching data for view ID: 4b02e768-34d2-4109-b167-519ccd11bc14 with filter: Application Term=['FALL 2025', 'SPRING 2026', 'SUMMER 2026']
+2026-02-12 00:39:30,919 - tableau_connector.client - INFO - Successfully fetched CSV data for view ID: 4b02e768-34d2-4109-b167-519ccd11bc14, size: 52545 bytes.
+2026-02-12 00:39:30,929 - report_processor.data_handler - INFO - Successfully fetched CSV for view 'Applicants - Submitted/Qualified/Admitted/Wait Listed/Deposited Table'. Shape: (486, 8)
+2026-02-12 00:39:30,930 - report_processor.data_handler - INFO - Starting processing for 'Progress Report' data...
+2026-02-12 00:39:31,209 - report_processor.data_handler - INFO - 'Progress Report' data processing complete.
+2026-02-12 00:39:31,218 - report_processor.data_handler - INFO - Successfully wrote sheet 'Progress Report' for view 'Applicants - Submitted/Qualified/Admitted/Wait Listed/Deposited Table'.
+2026-02-12 00:39:31,218 - report_processor.data_handler - INFO - Processing view: 'Submitted Applicant Status Detailed' (ID: c88a1b4c-08d6-4baf-9e95-4b7f3ecaa487) for Excel sheet: 'Application Status Breakdown'
+2026-02-12 00:39:31,218 - tableau_connector.client - INFO - Fetching data for view ID: c88a1b4c-08d6-4baf-9e95-4b7f3ecaa487 with filter: Application Term=['SUMMER 2026']
+2026-02-12 00:39:32,818 - tableau_connector.client - INFO - Successfully fetched CSV data for view ID: c88a1b4c-08d6-4baf-9e95-4b7f3ecaa487, size: 26288 bytes.
+2026-02-12 00:39:32,818 - report_processor.data_handler - INFO - Successfully fetched CSV for view 'Submitted Applicant Status Detailed'. Shape: (220, 8)
+2026-02-12 00:39:32,818 - report_processor.data_handler - INFO - Starting processing for 'Admit Breakdown' data...
+2026-02-12 00:39:32,956 - report_processor.data_handler - INFO - 'Admit Breakdown' data processing complete.
+2026-02-12 00:39:32,959 - report_processor.data_handler - INFO - Successfully wrote sheet 'Application Status Breakdown' for view 'Submitted Applicant Status Detailed'.
+2026-02-12 00:39:32,959 - report_processor.data_handler - INFO - Processing view: 'Power Campus Applicant Download' (ID: 8af01b1f-b683-4f36-a022-30d1ad7cc0aa) for Excel sheet: 'Raw Data'
+2026-02-12 00:39:32,959 - tableau_connector.client - INFO - Fetching data for view ID: 8af01b1f-b683-4f36-a022-30d1ad7cc0aa with filter: Application Term=['FALL 2025', 'SPRING 2026', 'SUMMER 2026']
+2026-02-12 00:39:37,561 - tableau_connector.client - INFO - Successfully fetched CSV data for view ID: 8af01b1f-b683-4f36-a022-30d1ad7cc0aa, size: 1698795 bytes.
+2026-02-12 00:39:37,606 - report_processor.data_handler - INFO - Successfully fetched CSV for view 'Power Campus Applicant Download'. Shape: (6006, 24)
+2026-02-12 00:39:37,609 - report_processor.data_handler - INFO - Starting processing for 'Raw Data Applicant Download'...
+2026-02-12 00:39:37,631 - report_processor.data_handler - INFO - 'Raw Data Applicant Download' processing complete.
+2026-02-12 00:39:38,324 - report_processor.data_handler - INFO - Successfully wrote sheet 'Raw Data' for view 'Power Campus Applicant Download'.
+2026-02-12 00:39:38,324 - report_processor.data_handler - INFO - All specified views processed for Excel sheet generation.
+2026-02-12 00:39:39,450 - __main__ - INFO - Raw data written to Excel sheets in: c:\Users\skhanna\Desktop\tableau_export\./output_reports\Admissions Report 2026-02-12.xlsx
+2026-02-12 00:39:39,450 - __main__ - INFO - Applying formatting to the generated Excel workbook...
+2026-02-12 00:39:39,450 - report_processor.excel_formatter - INFO - Starting Excel formatting for workbook: c:\Users\skhanna\Desktop\tableau_export\./output_reports\Admissions Report 2026-02-12.xlsx
+2026-02-12 00:39:41,034 - report_processor.excel_formatter - INFO - Formatting sheet: Progress Report
+2026-02-12 00:39:41,034 - report_processor.excel_formatter - INFO - Applying detailed styles to 'Progress Report' sheet: Progress Report
+2026-02-12 00:39:41,182 - report_processor.excel_formatter - INFO - Detailed styling for 'Progress Report' sheet 'Progress Report' complete.
+2026-02-12 00:39:41,183 - report_processor.excel_formatter - INFO - Formatting sheet: Application Status Breakdown
+2026-02-12 00:39:41,183 - report_processor.excel_formatter - INFO - Applying detailed styles to 'Admit Breakdown' sheet: Application Status Breakdown
+2026-02-12 00:39:41,250 - report_processor.excel_formatter - INFO - Detailed styling for 'Admit Breakdown' sheet 'Application Status Breakdown' complete.
+2026-02-12 00:39:41,251 - report_processor.excel_formatter - INFO - Formatting sheet: Raw Data
+2026-02-12 00:39:41,251 - report_processor.excel_formatter - INFO - Applying generic formatting to sheet: Raw Data
+2026-02-12 00:39:42,586 - report_processor.excel_formatter - INFO - Excel workbook formatting complete. Saved to: c:\Users\skhanna\Desktop\tableau_export\./output_reports\Admissions Report 2026-02-12.xlsx
+2026-02-12 00:39:42,586 - __main__ - INFO - Preparing to send report via Graph API to: skhanna@samuelmerritt.edu
+2026-02-12 00:39:43,098 - email_sender.mailer - INFO - Attached file: Admissions Report 2026-02-12.xlsx (434759 bytes)
+2026-02-12 00:39:43,098 - email_sender.mailer - INFO - Sending email via Graph API to 1 recipients as skhanna@samuelmerritt.edu...
+2026-02-12 00:39:43,803 - email_sender.mailer - INFO - Email successfully accepted by Microsoft Graph API.
+2026-02-12 00:39:43,803 - email_sender.mailer - INFO - Report email workflow finished successfully.
+2026-02-12 00:39:43,803 - __main__ - INFO - Workflow Completed Successfully!
+2026-02-12 00:39:43,803 - __main__ - INFO - Attempting to sign out from Tableau...
+2026-02-12 00:39:43,803 - tableau_connector.client - INFO - Attempting to sign out from Tableau Server...
+2026-02-12 00:39:43,898 - tableau_connector.client - INFO - Successfully signed out from Tableau Server.
+2026-02-12 00:39:43,901 - __main__ - INFO - Workflow finished.
+2026-02-12 00:39:43,903 - __main__ - INFO - ============================================================
+

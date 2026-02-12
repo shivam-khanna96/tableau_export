@@ -272,7 +272,7 @@ def format_excel_workbook(excel_path: str):
                 _auto_adjust_column_widths(ws)
 
         wb.save(excel_path)
-        logger.info(f"✅ Excel workbook formatting complete. Saved to: {excel_path}")
+        logger.info(f"Excel workbook formatting complete. Saved to: {excel_path}")
 
     except FileNotFoundError:
         logger.error(f"Error: Excel file not found at '{excel_path}'.")

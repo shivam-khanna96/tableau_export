@@ -159,7 +159,7 @@ class TableauClient:
                 logger.error("Authentication response missing critical credentials (token or siteId).")
                 raise TableauAPIError("Authentication failed: Incomplete credentials received.", response_text=response.text)
 
-            logger.info("✅ Authentication successful!")
+            logger.info("Authentication successful!")
             logger.debug(f"Auth Token (first 10 chars): {self.auth_token[:10]}...")
             logger.debug(f"Site ID: {self.site_id}, User ID: {self.user_id}")
         except TableauAPIError as e:
@@ -177,7 +177,7 @@ class TableauClient:
         logger.info("Attempting to sign out from Tableau Server...")
         try:
             self._make_api_request("POST", "auth/signout")
-            logger.info("✅ Successfully signed out from Tableau Server.")
+            logger.info("Successfully signed out from Tableau Server.")
         except TableauAPIError as e:
             logger.warning(f"Sign out attempt failed or was not necessary: {e}")
         finally:
