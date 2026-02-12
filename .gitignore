@@ -31,6 +31,7 @@ MANIFEST
 # Output files (optional, but good practice for generated reports)
 *.xlsx
 output_reports
+logs
 
 # Virtual environment
 venv/
