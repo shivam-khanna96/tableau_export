@@ -98,8 +98,7 @@ EMAIL_SUBJECT_PREFIX = "Weekly Admissions Report"
 EMAIL_BODY_GREETING = """Hi team,
 Please find the latest admissions report attached to this email."""
 EMAIL_BODY_SIGNATURE = """Thanks,
-Automated Report System
-(Developed by Shivam Khanna)"""
+Shivam Khanna"""
 
 
 # --- Data Processing Constants ---

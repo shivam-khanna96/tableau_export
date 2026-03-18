@@ -30,6 +30,7 @@ MANIFEST
 
 # Output files (optional, but good practice for generated reports)
 *.xlsx
+*.log
 output_reports
 logs
 
