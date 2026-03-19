@@ -72,7 +72,7 @@ if not all([GRAPH_CLIENT_ID, GRAPH_CLIENT_SECRET, GRAPH_TENANT_ID, GRAPH_SENDER_
 
 # --- Report Specific Configuration ---
 TARGET_PROJECT_NAME = "Admissions Pipeline"
-TARGET_WORKBOOK_NAME_CONTAINS = "Student_Lifecycle_Pipeline"
+TARGET_WORKBOOK_NAME_CONTAINS = "Student_Lifecycle_Pipeline_Tableau_Online_v10"
 TARGET_VIEW_URL_NAMES = [
     "Applicants-SubmittedQualifiedAdmittedWaitListedDepositedTable",
     "PowerCampusApplicantDownload",
