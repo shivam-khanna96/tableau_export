@@ -61,48 +61,71 @@ def run_reporting_workflow():
         tableau_client.authenticate()
 
         # --- 2. Find Matching Workbook(s) ---
-        matching_workbooks = tableau_client.find_matching_workbooks(
-            project_name=settings.TARGET_PROJECT_NAME,
-            name_contains_filter=settings.TARGET_WORKBOOK_NAME_CONTAINS
+        # ... [keep initialization and authentication code] ...
+
+        # Helper function to fetch views for a given dashboard
+        # Helper function to fetch views for a given dashboard
+        # Helper function to fetch views for a given dashboard
+        def fetch_dashboard_data(workbook_contains, view_urls, default_terms):
+            dashboard_data = {}
+            if not default_terms:
+                return dashboard_data
+                
+            workbooks = tableau_client.find_matching_workbooks(settings.TARGET_PROJECT_NAME, workbook_contains)
+            if not workbooks:
+                logger.warning(f"No workbook found containing '{workbook_contains}'.")
+                return dashboard_data
+
+            wb_id = workbooks[0].get("id")
+            target_urls = list(view_urls.values())
+            views = tableau_client.find_matching_views(wb_id, target_urls)
+
+            for view_key, target_url in view_urls.items():
+                matched_view = next((v for v in views if v.get("viewUrlName") == target_url), None)
+                if matched_view:
+                    # Apply the specific override for admit_breakdown
+                    view_terms = settings.ADMIT_BREAKDOWN_TERMS if view_key == "admit_breakdown" else default_terms
+                    
+                    logger.info(f"Fetching {view_key} from {workbook_contains} for terms: {view_terms}")
+                    csv_bytes = tableau_client.get_view_data_csv(
+                        matched_view.get("id"),
+                        filter_name=settings.VIEW_FILTER_NAME,
+                        filter_values=view_terms
+                    )
+                    
+                    # --- NEW: Graceful Error Handling for Empty Files ---
+                    try:
+                        dashboard_data[view_key] = pd.read_csv(io.BytesIO(csv_bytes), thousands=',')
+                    except pd.errors.EmptyDataError:
+                        logger.error(f"CRITICAL: Tableau returned an empty file ({len(csv_bytes)} bytes) for '{view_key}'.")
+                        logger.error("Skipping this view but continuing the workflow.")
+                        dashboard_data[view_key] = pd.DataFrame() # Return empty DF so the script doesn't crash
+                    # ----------------------------------------------------
+                        
+            return dashboard_data
+
+        # --- 2 & 3. Fetch Data from Both Dashboards ---
+        import io # Ensure 'import io' is at the top of main.py
+        
+        legacy_dataframes = fetch_dashboard_data(
+            settings.LEGACY_WORKBOOK_NAME_CONTAINS, 
+            settings.LEGACY_VIEW_URLS, 
+            settings.LEGACY_TERMS
+        )
+        
+        workday_dataframes = fetch_dashboard_data(
+            settings.WORKDAY_WORKBOOK_NAME_CONTAINS, 
+            settings.WORKDAY_VIEW_URLS, 
+            settings.WORKDAY_TERMS
         )
 
-        if not matching_workbooks:
-            logger.warning(
-                f"No workbooks found matching project '{settings.TARGET_PROJECT_NAME}' "
-                f"and name containing '{settings.TARGET_WORKBOOK_NAME_CONTAINS}'. Workflow cannot proceed."
-            )
-            return
-
-        target_workbook = matching_workbooks[0]
-        target_workbook_id = target_workbook.get("id")
-        logger.info(f"Using workbook: '{target_workbook.get('name')}' (ID: {target_workbook_id})")
-
-        if not target_workbook_id:
-            logger.error("Selected workbook has no ID. Cannot proceed.")
-            return
-
-        # --- 3. Find Matching Views ---
-        views_to_process_details = tableau_client.find_matching_views(
-            workbook_id=target_workbook_id,
-            target_view_url_names=settings.TARGET_VIEW_URL_NAMES
-        )
-
-        if not views_to_process_details:
-            logger.warning(
-                f"No views found matching the target URL names {settings.TARGET_VIEW_URL_NAMES} "
-                f"in workbook ID '{target_workbook_id}'. Workflow cannot proceed."
-            )
-            return
-
-        logger.info(f"Found {len(views_to_process_details)} views to process.")
-
-        # --- 4. Generate Excel Report ---
+        # --- 4. Generate Consolidated Excel Report ---
         logger.info(f"Preparing to generate Excel report at: {settings.OUTPUT_EXCEL_FULL_PATH}")
             
         with pd.ExcelWriter(settings.OUTPUT_EXCEL_FULL_PATH, engine="openpyxl") as writer:
-            data_handler.generate_excel_sheets_from_views(
-                tableau_client=tableau_client,
-                views_to_fetch=views_to_process_details,
+            data_handler.generate_consolidated_report(
+                legacy_data=legacy_dataframes,
+                workday_data=workday_dataframes,
                 excel_writer=writer
             )
         logger.info(f"Raw data written to Excel sheets in: {settings.OUTPUT_EXCEL_FULL_PATH}")
@@ -114,9 +137,9 @@ def run_reporting_workflow():
         # --- 6. Send Email with the Report ---
         if settings.EMAIL_RECIPIENTS_LIST:
             logger.info(f"Preparing to send report via Graph API to: {', '.join(settings.EMAIL_RECIPIENTS_LIST)}")
-            mailer.prepare_and_send_report_email(
-                attachment_full_path=settings.OUTPUT_EXCEL_FULL_PATH
-            )
+            # mailer.prepare_and_send_report_email(
+            #     attachment_full_path=settings.OUTPUT_EXCEL_FULL_PATH
+            # )
         else:
             logger.info("No email recipients configured. Skipping email step.")
 

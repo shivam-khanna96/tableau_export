@@ -286,62 +286,44 @@ def process_raw_data_applicant_download(df_raw: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def generate_excel_sheets_from_views(
-    tableau_client: TableauClient,
-    views_to_fetch: List[Dict[str, Any]],
+def generate_consolidated_report(
+    legacy_data: Dict[str, pd.DataFrame],
+    workday_data: Dict[str, pd.DataFrame],
     excel_writer: pd.ExcelWriter
 ) -> None:
-    logger.info(f"Processing {len(views_to_fetch)} views for Excel report generation...")
+    logger.info("Consolidating data from Legacy and Workday dashboards...")
 
-    for view_details in views_to_fetch:
-        view_id = view_details.get("id")
-        view_url_name = view_details.get("viewUrlName")
-        view_display_name = view_details.get("name", view_url_name)
+    # --- 1. Progress Report (Merged) ---
+    progress_dfs = []
+    if "progress" in legacy_data: progress_dfs.append(legacy_data["progress"])
+    if "progress" in workday_data: progress_dfs.append(workday_data["progress"])
+    
+    if progress_dfs:
+        combined_progress_raw = pd.concat(progress_dfs, ignore_index=True)
+        processed_progress = process_progress_report_data(combined_progress_raw)
+        processed_progress.to_excel(excel_writer, sheet_name=settings.EXCEL_SHEET_NAME_PROGRESS_REPORT, index=False)
+        logger.info("Successfully wrote consolidated 'Progress Report'.")
 
-        if not view_id or not view_url_name:
-            logger.warning(f"Skipping view due to missing ID or URLName: {view_details}")
-            continue
+    # --- 2. Admit Breakdown (Legacy Only - Moved up for Tab Order) ---
+    if "admit_breakdown" in legacy_data and not legacy_data["admit_breakdown"].empty:
+        processed_admit = process_admit_breakdown_data(legacy_data["admit_breakdown"])
+        processed_admit.to_excel(excel_writer, sheet_name=settings.EXCEL_SHEET_NAME_ADMIT_BREAKDOWN, index=False)
+        logger.info("Successfully wrote legacy 'Application Status Breakdown'.")
+    else:
+        logger.info("Skipping 'Application Status Breakdown' (no legacy data fetched).")
 
-        sheet_name = settings.VIEW_URL_NAME_TO_SHEET_NAME_MAP.get(view_url_name, view_url_name[:31])
-        logger.info(f"Processing view: '{view_display_name}' (ID: {view_id}) for Excel sheet: '{sheet_name}'")
+    # --- 3. Raw Data (Merged & Mapped - Moved down to be the last Tab) ---
+    raw_dfs = []
+    if "raw_data" in legacy_data:
+        raw_dfs.append(legacy_data["raw_data"])
+        
+    if "raw_data" in workday_data:
+        wd_raw = workday_data["raw_data"].copy()
+        wd_raw.rename(columns=settings.WORKDAY_RAW_DATA_COLUMN_MAPPING, inplace=True)
+        raw_dfs.append(wd_raw)
 
-        # <<< MODIFIED: Determine filter values based on view >>>
-        current_filter_values = settings.VIEW_FILTER_VALUES_MULTI_TERM # Default to multi-term
-        if view_url_name == settings.ADMIT_BREAKDOWN_VIEW_URL_NAME:
-            current_filter_values = settings.VIEW_FILTER_VALUES_SUMMER_ONLY
-        # You might want to add similar logic if Raw Data also needs specific filters
-
-        try:
-            csv_data_bytes = tableau_client.get_view_data_csv(
-                view_id,
-                filter_name=settings.VIEW_FILTER_NAME,
-                filter_values=current_filter_values # <<< MODIFIED: Use determined filter values
-            )
-            raw_df = pd.read_csv(BytesIO(csv_data_bytes), thousands=',')
-            logger.info(f"Successfully fetched CSV for view '{view_display_name}'. Shape: {raw_df.shape}")
-
-            processed_df = None
-            if view_url_name == settings.PROGRESS_REPORT_VIEW_URL_NAME:
-                processed_df = process_progress_report_data(raw_df)
-            elif view_url_name == settings.ADMIT_BREAKDOWN_VIEW_URL_NAME: # <<< NEW ELIF
-                processed_df = process_admit_breakdown_data(raw_df)
-            elif view_url_name == settings.RAW_DATA_VIEW_URL_NAME:
-                processed_df = process_raw_data_applicant_download(raw_df)
-            else:
-                logger.warning(f"No specific processing logic for view URL name: '{view_url_name}'. Writing raw data.")
-                processed_df = raw_df
-
-            if processed_df is not None and not processed_df.empty:
-                processed_df.to_excel(excel_writer, sheet_name=sheet_name, index=False)
-                logger.info(f"Successfully wrote sheet '{sheet_name}' for view '{view_display_name}'.")
-            elif processed_df is not None and processed_df.empty:
-                 logger.warning(f"Processed DataFrame for view '{view_display_name}' is empty. Sheet '{sheet_name}' will be empty.")
-                 pd.DataFrame().to_excel(excel_writer, sheet_name=sheet_name, index=False)
-
-        except Exception as e:
-            logger.error(f"Failed to process/write data for view '{view_display_name}': {e}", exc_info=True)
-            error_df = pd.DataFrame([{"Error": f"Could not load/process data for view {view_display_name}: {str(e)}"}])
-            error_sheet_name = f"ERROR_{sheet_name[:25]}"
-            error_df.to_excel(excel_writer, sheet_name=error_sheet_name, index=False)
-
-    logger.info("All specified views processed for Excel sheet generation.")
+    if raw_dfs:
+        combined_raw = pd.concat(raw_dfs, ignore_index=True)
+        processed_raw = process_raw_data_applicant_download(combined_raw)
+        processed_raw.to_excel(excel_writer, sheet_name="Raw Data", index=False)
+        logger.info("Successfully wrote consolidated 'Raw Data'.")

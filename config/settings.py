@@ -70,24 +70,41 @@ if not all([GRAPH_CLIENT_ID, GRAPH_CLIENT_SECRET, GRAPH_TENANT_ID, GRAPH_SENDER_
     print("WARNING: Graph API credentials missing. Email sending will fail.")
 
 
-# --- Report Specific Configuration ---
-TARGET_PROJECT_NAME = "Admissions Pipeline"
-TARGET_WORKBOOK_NAME_CONTAINS = "Student_Lifecycle_Pipeline_Tableau_Online_v10"
-TARGET_VIEW_URL_NAMES = [
-    "Applicants-SubmittedQualifiedAdmittedWaitListedDepositedTable",
-    "PowerCampusApplicantDownload",
-    "SubmittedApplicantStatusDetailed"
-]
-
-VIEW_URL_NAME_TO_SHEET_NAME_MAP = {
-    "Applicants-SubmittedQualifiedAdmittedWaitListedDepositedTable": "Progress Report",
-    "PowerCampusApplicantDownload": "Raw Data",
-    "SubmittedApplicantStatusDetailed": "Application Status Breakdown"
-}
+# --- Term Migration Configuration ---
+# The script will fetch data for these terms. To deprecate a dashboard, empty its list.
+LEGACY_TERMS = ["SPRING 2026", "SUMMER 2026"] 
+WORKDAY_TERMS = ["FALL 2026"]
+ADMIT_BREAKDOWN_TERMS = [LEGACY_TERMS[-1]]
 
 VIEW_FILTER_NAME = "Application Term"
-VIEW_FILTER_VALUES_MULTI_TERM = ["FALL 2025", "SPRING 2026", "SUMMER 2026"]
-VIEW_FILTER_VALUES_SUMMER_ONLY = ["SUMMER 2026"]
+
+# --- Legacy (PowerCampus) Configuration ---
+TARGET_PROJECT_NAME = "Admissions Pipeline"
+LEGACY_WORKBOOK_NAME_CONTAINS = "Student_Lifecycle_Pipeline_Tableau_Online_v10"
+LEGACY_VIEW_URLS = {
+    "progress": "Applicants-SubmittedQualifiedAdmittedWaitListedDepositedTable",
+    "raw_data": "PowerCampusApplicantDownload",
+    "admit_breakdown": "SubmittedApplicantStatusDetailed"
+}
+
+# --- New (Workday) Configuration ---
+WORKDAY_WORKBOOK_NAME_CONTAINS = "Student_Lifecycle_Pipeline_Tableau_Online_v11"
+WORKDAY_VIEW_URLS = {
+    "progress": "Applicants-SubmittedQualifiedAdmittedWaitListedDepositedTable",
+    "raw_data": "ApplicantDownload"
+}
+
+# --- Workday to Legacy Column Mapping ---
+# Map the Workday raw data column names to the Legacy names so pd.concat aligns them correctly.
+# --- Workday to Legacy Column Mapping ---
+WORKDAY_RAW_DATA_COLUMN_MAPPING = {
+    "last_name": "LAST_NAME",
+    "first_name": "FIRST_NAME",
+    "student_id": "PEOPLE_CODE_ID",
+    "applied_campus": "Campus",
+    "primary_home_email_address": "Personal_EMAIL", # Or "EMAIL" if that's what your old code expects
+    "application_date": "APPLICATION_DATE"
+}
 
 
 # --- Email Content ---
@@ -112,11 +129,11 @@ PROGRESS_REPORT_PIVOT_VALUES_COLUMN = "Measure Values"
 PROGRESS_REPORT_FINAL_COLUMN_ORDER = [
     "Application Term", "Program", "CURRICULUM", "DEGREE",
     "Submitted Applicants", "Qualified Applicants",
-    "Admitted Applicants", "Wait Listed", "Deposited"
+    "Admitted Applicants", "Wait Listed", "Deposited", "Enrolled"
 ]
 PROGRESS_REPORT_NUMERIC_COLUMNS_FOR_INT_CONVERSION = [
     "Submitted Applicants", "Qualified Applicants",
-    "Admitted Applicants", "Wait Listed", "Deposited"
+    "Admitted Applicants", "Wait Listed", "Deposited", "Enrolled"
 ]
 PROGRESS_REPORT_SUBTOTAL_COLUMNS_TO_AGGREGATE = PROGRESS_REPORT_NUMERIC_COLUMNS_FOR_INT_CONVERSION
 
@@ -156,13 +173,30 @@ ADMIT_BREAKDOWN_SUBTOTAL_COLUMNS_TO_AGGREGATE = ADMIT_BREAKDOWN_NUMERIC_COLUMNS_
 RAW_DATA_VIEW_URL_NAME = "PowerCampusApplicantDownload"
 RAW_DATA_DROP_COLUMNS = ['Blank', 'Month, Day, Year of Data Refresh Date', 'Index', 'Count of FIRST_NAME']
 RAW_DATA_FINAL_COLUMN_SELECTION_ORDER = [
-    'PEOPLE_CODE_ID', 'FIRST_NAME', 'LAST_NAME', 'EMAIL',
+    # Identifiers & Demographics
+    'PEOPLE_CODE_ID', 'workdayid', 'FIRST_NAME', 'LAST_NAME', 'Personal_EMAIL', 'SMU_EMAIL',
+    
+    # Program Details
     'Application Term', 'Program', 'CURRICULUM', 'DEGREE', 'Campus',
+    
+    # Legacy Statuses
     'ACADEMIC_SESSION', 'APP_DECISION', 'Submitted Applicant Decision',
-    'APP_STATUS', 'Submitted Applicant Status', 'ENROLL_SEPARATION',
-    'APPLICATION_DATE', 'ACADEMIC_FLAG'
+    'APP_STATUS', 'Submitted Applicant Status', 
+    
+    # Workday Statuses
+    'admission_decision', 'admission_decision_reason', 'admission_response',
+    
+    # Dates (Legacy & Workday)
+    'APPLICATION_DATE', 'APP_DECISION_DATE', 'APP_STATUS_DATE', 
+    'admit_date', 'deposit_date',
+    
+    # Calculated Flags / Metrics
+    'Qualified Applicants', 'Admitted Applicants',  'Wait Listed', 
+    'Deposited', 'Enrolled',
+    
+    # Other flags
+    'ENROLL_SEPARATION', 'ACADEMIC_FLAG'
 ]
-
 
 # --- Logging Configuration ---
 LOGGING_LEVEL = "INFO" # Options: DEBUG, INFO, WARNING, ERROR, CRITICAL
