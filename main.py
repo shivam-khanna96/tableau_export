@@ -64,8 +64,6 @@ def run_reporting_workflow():
         # ... [keep initialization and authentication code] ...
 
         # Helper function to fetch views for a given dashboard
-        # Helper function to fetch views for a given dashboard
-        # Helper function to fetch views for a given dashboard
         def fetch_dashboard_data(workbook_contains, view_urls, default_terms):
             dashboard_data = {}
             if not default_terms:
