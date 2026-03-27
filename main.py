@@ -137,9 +137,9 @@ def run_reporting_workflow():
         # --- 6. Send Email with the Report ---
         if settings.EMAIL_RECIPIENTS_LIST:
             logger.info(f"Preparing to send report via Graph API to: {', '.join(settings.EMAIL_RECIPIENTS_LIST)}")
-            # mailer.prepare_and_send_report_email(
-            #     attachment_full_path=settings.OUTPUT_EXCEL_FULL_PATH
-            # )
+            mailer.prepare_and_send_report_email(
+                attachment_full_path=settings.OUTPUT_EXCEL_FULL_PATH
+            )
         else:
             logger.info("No email recipients configured. Skipping email step.")
 
